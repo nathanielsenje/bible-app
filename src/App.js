@@ -15,7 +15,7 @@ function App() {
   const [displayText, setDisplayText] = useState('');
   const [error, setError] = useState(null);
   const [showCard, setShowCard] = useState(false);
-  const [buttonText, setButtonText] = useState('Memorize'); // Add this line
+  const [buttonText, setButtonText] = useState('Memorize');
 
   const fetchVerse = useCallback(async () => {
     try {
@@ -37,7 +37,14 @@ function App() {
   const handleMemorize = useCallback(() => {
     if (buttonText === 'Memorize') {
       const words = text.split(/[\s.]+/); // Split by both spaces and periods
-      const firstLetters = words.map(word => word.length > 0 ? word[0].toUpperCase() : '').join(' ');
+      const firstLetters = words.map(word => {
+        // Skip special characters at the start of the word
+        let startIndex = 0;
+        while (startIndex < word.length && /[^A-Za-z0-9]/.test(word[startIndex])) {
+          startIndex++;
+        }
+        return startIndex < word.length ? word[startIndex].toUpperCase() : '';
+      }).join(' ');
       setDisplayText(firstLetters);
       setButtonText('See full text');
     } else {
@@ -56,14 +63,12 @@ function App() {
           {showCard && (
             <Card>
               <Card.Body>
-                <Card.Title>
-                  <h1>{book} {chapter}:{verse}</h1>
-                </Card.Title>
-                <hr />
                 <Card.Text>
-                  <p className='large-text'>{displayText}</p>
+                  <Card.Title><h3>{book} {chapter}:{verse}</h3></Card.Title>
+                  <hr />
+                  <p className={buttonText === 'Memorize' ? 'large-text' : 'small-text'}>{displayText}</p> {/* Modify this line */}
                 </Card.Text>
-                <Button variant="outline-dark" onClick={handleMemorize}>{buttonText}</Button> {/* Modify this line */}
+                <Button variant="outline-dark" onClick={handleMemorize}>{buttonText}</Button>
               </Card.Body>
             </Card>
           )}
@@ -72,7 +77,6 @@ function App() {
         <Row>
           <Form onSubmit={handleSubmit}>
             <InputGroup className="mb-3">
-              <InputGroup.Text>Book and Chapter</InputGroup.Text>
               <Form.Control as="select" value={book} onChange={e => setBook(e.target.value)} required>
                 <option value="">Book</option>
                 {booksOfTheBible.map((book) => (

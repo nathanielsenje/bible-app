@@ -2,10 +2,18 @@
   text-align: center;
 }
 
-.large-text{
-  font-size: 2.5em;
+.large-text {
+  font-size: 2em;
 }
 
-.medium-text{
-  font-size: 1.5em;
+.small-text {
+  font-size: 3em;
+}
+
+
+
+@media (max-width: 600px) {
+  .App {
+    padding: 10px;
+  }
 }

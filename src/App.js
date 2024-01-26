@@ -57,7 +57,7 @@ function App() {
   return (
     <div className="App">
       <Container>
-        <Row className='mt-5 mb-3'>
+        <Row className='mt-2 mb-2'>
           {error && <p>{error}</p>}
 
           {showCard && (

@@ -3,17 +3,9 @@
 }
 
 .large-text {
-  font-size: 2em;
+  font-size: 1rem;
 }
 
 .small-text {
-  font-size: 3em;
-}
-
-
-
-@media (max-width: 600px) {
-  .App {
-    padding: 10px;
-  }
+  font-size: 2rem;
 }

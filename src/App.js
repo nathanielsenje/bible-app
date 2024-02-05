@@ -18,8 +18,10 @@ function App() {
   const [buttonText, setButtonText] = useState('Memorize');
 
   const fetchVerse = useCallback(async () => {
+
     try {
       const response = await axios.get(`https://bible-api.com/${book}+${chapter}:${verse}`);
+
       setText(response.data.text);
       setDisplayText(response.data.text);
       setShowCard(true);
@@ -56,6 +58,7 @@ function App() {
 
   return (
     <div className="App">
+      
       <Container>
         <Row className='mt-2 mb-2'>
           {error && <p>{error}</p>}
@@ -66,7 +69,7 @@ function App() {
                 <Card.Text>
                   <Card.Title><h3>{book} {chapter}:{verse}</h3></Card.Title>
                   <hr />
-                  <p className={buttonText === 'Memorize' ? 'large-text' : 'small-text'}>{displayText}</p> {/* Modify this line */}
+                  <p className={buttonText === 'Memorize' ? 'large-text' : 'small-text'}>{displayText}</p>
                 </Card.Text>
                 <Button variant="outline-dark" onClick={handleMemorize}>{buttonText}</Button>
               </Card.Body>
@@ -89,7 +92,7 @@ function App() {
             </InputGroup>
           </Form>
         </Row>
-      </Container>
+      </Container >
     </div>
   );
 }

@@ -1,42 +1,57 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Container, Row, Form, Button } from 'react-bootstrap';
-import Card from 'react-bootstrap/Card';
-import InputGroup from 'react-bootstrap/InputGroup';
+import React, { useState } from 'react';
+import { Container, Row, Col, Button, Image, Card } from 'react-bootstrap';
+import '../App.css'
 
-const ESV = ({ verse }) => {
-  const [verseData, setVerseData] = useState(null);
-  const [error, setError] = useState(null);
+function ESV({ verseData }) {
+  const [isSummarized, setIsSummarized] = useState(false);
+  const [textClassName, setTextClassName] = useState('normal-text');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:1337/');
-        setVerseData(response); // Access the correct object property
-      } catch (error) {
-        setError(error);
-      }
-    };
+  // Handle potential loading or error states
+  if (!verseData) {
+    return <p className='mt-5'>Loading...</p>;
+  }
 
-    fetchData();
-  }, []);
+  const formattedText = verseData.serverResponse[1]
+    .slice(verseData.serverResponse[1].indexOf("[") - 1)
+    .split(/\(ESV\)|\bFootnotes\b/)[0] // Split on "(ESV)" or "Footnotes"
+    .trim();
+
+
+  const summarizedText = formattedText.split(/\s+/).map((word) => {
+    // Use 4 letters for words starting with "[" or 1 letter for others
+    return word.startsWith("[") ? word.slice(0, 4) : word.charAt(0);
+  }).join(" ");
+
+  const textToDisplay = isSummarized ? (
+    <p className={textClassName}>{summarizedText.toUpperCase()}</p>
+  ) : (
+    <p className={textClassName}>{formattedText}</p>
+  );
 
   return (
-    <div>
-      {error ? (
-        <p>Error: {error.message}</p>
-      ) : verseData ? (
-        <>
-          <h1>{verseData.data.serverResponse[0]}</h1>
-          <p> {verseData.data.serverResponse[1]} </p>
-        </>
-      ) : (
-        <p>Loading...</p>
-      )}
-
-      
-    </div>
+    <Container>
+      <Row className='mt-5 mb-2'>
+        <Card>
+          <Card.Body>
+            <Card.Text>
+              <Card.Title><h3>{verseData.serverResponse[0]}</h3></Card.Title>
+              <hr />
+              {textToDisplay}
+            </Card.Text>
+            <Button
+              variant="outline-dark"
+              onClick={() => {
+                setIsSummarized(!isSummarized);
+                setTextClassName(isSummarized ? 'normal-text' : 'summarized-text');
+              }}
+            >
+              {isSummarized ? 'Normal Text' : 'Memorize'}
+            </Button>
+          </Card.Body>
+        </Card>
+      </Row>
+    </Container>
   );
-};
+}
 
 export default ESV;
